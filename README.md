@@ -9,7 +9,8 @@
 <span>git clone https://github.com/behradhg/TeleNfs.git</span>
 <span>cd TeleNfs</span>
 <span>chmod 7777 bot</span>
-<span>./bot install</span>
+<span>./bot -tg</span>
+<span>./bot -apt</span>
 </pre>
 
 
@@ -31,8 +32,8 @@
 </h3>
 <pre>
 <span>./bot run #for run helper and tg-bot</span>
-<span>./bot -t #for run tg-bot best</span>
-<span>./bot api #for run api bot</span>
+<span>./bot -r #for run tg-bot best</span>
+<span>./bot -api #for run api bot</span>
 </pre>
 
 # Ranks
