@@ -1,4 +1,3 @@
-[![https://yago.me/tg-bot](https://img.shields.io/badge/💬behrad.svg)]
 <p align="center"> <img src="http://icons.iconarchive.com/icons/3xhumed/mega-games-pack-35/512/NFSShift-logo-2-icon.png" width="512">
 <h1><p align="center">NFS-Bot
 <h1><p align="center">We are best =|
@@ -49,4 +48,9 @@
  Banned | cant join group.
  superband | can`t join all bots groups.
 
- 
+# Special thanks to
+[@BugsCreator](https://telegram.me/BugsCreator)
+
+* * *
+
+# [@NFS_team](https://telegram.me/NFS_team)
