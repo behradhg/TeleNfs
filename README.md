@@ -1,3 +1,4 @@
+[![https://yago.me/tg-bot](https://img.shields.io/badge/💬behrad.svg)]
 <p align="center"> <img src="http://icons.iconarchive.com/icons/3xhumed/mega-games-pack-35/512/NFSShift-logo-2-icon.png" width="512">
 <h1><p align="center">NFS-Bot
 <h1><p align="center">We are best =|
@@ -34,3 +35,18 @@
 <span>./bot -t #for run tg-bot best</span>
 <span>./bot api #for run api bot</span>
 </pre>
+
+# Ranks
+
+ Ranks | Permissions      |
+------ | ---------------- |
+ bot Owner | get all notifications
+ sudo | Has access to everything
+ admin | Has access to premium feature for bots and groups
+ leader | Has access to premium feature for group
+ owner | Can control bot on the group. Can`t promote_(leader -owners)/demote_(leader -owners).
+ mods | Can set settings and kick/ban/unban users from a group.
+ Banned | cant join group.
+ superband | can`t join all bots groups.
+
+ 
