@@ -3,5 +3,5 @@
 |[#!/]sudo |promote user as sudo user |sudo |Y|Y|Y|sudo|
 |[#!/]desudo |demote user as sudo user |sudo |Y|Y|Y|sudo|
 |[#!/]sudolist |list of sudo users |sudo |N|N|N|sudo|
-|[#!/]admin \n [#!/]adminprom |for set user as bot admin|sudo |Y|Y|Y|gpmod|
+|[#!/]admin                               [#!/]adminprom |for set user as bot admin|sudo |Y|Y|Y|gpmod|
 
