@@ -22,3 +22,9 @@
  setlang | 🔴 | ✅ |
  vip | 🔴 | ✅ |
  write | 🔴 | ✅ |
+
+ 
+***
+# Commands
+| Command | Description | rank | reply | username | id | plugin | 
+|:--------|:------------|:-----|:------|:----------------|:---|:-------|
