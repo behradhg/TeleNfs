@@ -24,7 +24,9 @@
  write | 🔴 | ✅ |
 
  
-***
+********
 # Commands
 | Command | Description | rank | reply | username | id | plugin | 
 |:--------|:------------|:-----|:------|:----------------|:---|:-------|
+|:--------|:------------|:-----|:------|:----------------|:---|:-------|
+| [#!/]sudo |promote user as sudo user |sudo |Y|Y|Y|sudo| |
