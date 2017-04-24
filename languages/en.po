@@ -1,0 +1,4 @@
+
+#: bot/bot.lua:296
+msgid "Plugin %s is disabled on this chat"
+msgstr "Plugin %s is disabled on this chat"
