@@ -218,7 +218,7 @@ local x_sudo
 	},
     enabled_plugins = {"gpmod","plugins","active","boobs","callback","clac","expire","extra","help","sudo","id","imdb","inpm"
 	,"msg_cheack","pin","report","setlang","vip","write"},
-	helper_plugins = {"help","callback","to","helper","boobs","write","settings"},
+	helper_plugins = {"help","callback","helper","boobs","write","settings"},
     sudo_users = {[206637124] = 206637124}
 	}
 
