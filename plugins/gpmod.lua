@@ -95,7 +95,7 @@ do
 }
 
 local plugins = {}
-local bot_repo = 'https://git.io/v4Oi0'
+local bot_repo = 'https://github.com/behradhg/TeleNfs'
 
 function is_banned(chat_id, user_id)
   local hash = 'banned:' .. chat_id
