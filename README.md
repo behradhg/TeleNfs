@@ -51,6 +51,9 @@
 
 # Special thanks to
 [@BugsCreator](https://telegram.me/BugsCreator)
+[Butler-bot](https://github.com/RememberTheAir/GroupButler)
+[@Nero_Dev](https://telegram.me/Nero_Dev)
+[rizaumami](https://github.com/rizaumami)
 
 * * *
 
