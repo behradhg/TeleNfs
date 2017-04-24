@@ -5,7 +5,7 @@ end
 function sphoto(arg ,msgr)
 local count = msgr.total_count_
 if count < 1 then
-return td.sendText(tonumber(msg.to.id), 0, 1, 0, nil, arg:=gsub('_', '\\%0'), 0, 'md', ok_cb, cmd)
+return td.sendText(tonumber(msg.to.id), 0, 1, 0, nil, arg:gsub('_', '\\%0'), 0, 'md', ok_cb, cmd)
 end
 local min = msgr.photos_
 local random_table = min[(math.random(count) - 1)]
