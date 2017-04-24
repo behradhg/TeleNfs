@@ -95,7 +95,9 @@ if [ ! -f "./tg" ]; then echo "Please install tg"; exit; fi
 
     echo -e "\e[1;36mInstalling dependencies\e[0m"
     sudo apt-get install libreadline-dev libssl-dev lua5.2 luarocks liblua5.2-dev git make unzip redis-server curl libcurl4-gnutls-dev -y
-    
+    sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev lua-socket lua-sec lua-expat libevent-dev make unzip git redis-server autoconf g++ libjansson-dev libpython-dev expat libexpat1-dev
+    sudo apt-get install lua-lgi
+    sudo apt-get install libnotify-dev
     echo -e "\e[1;36mInstalling LuaRocks from sources\e[0m"
     
     git clone http://github.com/keplerproject/luarocks
