@@ -11,6 +11,12 @@ json = require('dkjson')
 serpent = require('serpent')
 config = loadfile('./data/config.lua')()
 api = dofile('./bot/api.lua')
+local f = io.open('help.lua','r')
+if f ~= nil then
+else
+print('Help not founded please run cli bot frist')
+os.exit()
+end
 HELP = loadfile('help.lua')()
 send_api = "https://api.telegram.org/bot"..config.api.token
 bot_version = "2.5"
