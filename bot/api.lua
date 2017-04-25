@@ -64,6 +64,7 @@ function send_inline(chat_id, text, keyboard)
 	end
 	return  res, code
 end
+
 function log_error(method, code, extras, description)
 	if not method or not code then return end
 	
@@ -90,7 +91,9 @@ function log_error(method, code, extras, description)
 	else
 		text = text..'\nmore: nil'
 	end
+	if msg then
 	reply_msg(msg.id, '#bug_finder NFS\n🐞 Sorry, a bug occurred', ok_cb, true)
+	end
 	api.sendLog(text)
 end
 
