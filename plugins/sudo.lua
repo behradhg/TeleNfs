@@ -1,4 +1,4 @@
-﻿
+
 function ssave(data, file, extra)
   local data = data or _config
   local file = file or config_file
@@ -134,6 +134,24 @@ end
       end
     end
 
+	if matches[1] == 'lists' then
+	td.getActiveSessions(function(a , b) 
+	vp(b)
+	local pid = b.sessions_
+	local num = #pid
+	local text = 'List of Active Sessions :\n'
+	for i = 0 ,#pid do
+	rank = ''
+	if pid[i].is_current_ then
+	rank = '✔️'
+	end
+	text = text..'\n\nApp : *'..pid[i].app_name_..rank..'*\nCountry : *'..pid[i].country_..'*\nDevice : *'..pid[i].device_model_..'*\nsystem : *'..pid[i].system_version_
+	..'*\nPlatform : *'..tostring(pid[i].platform_)..'*'
+	end
+	td.sendText(chat_id, 0, 1, 0, nil,  text, 0, 'md', ok_cb, cmd) 
+	end)
+	
+end
     if matches[1] == 'getconfig'  then
       td.sendDocument(chat_id, 0, 0, 1, nil, 'data/config.lua', os.date('%c', msg.date_))
     end
@@ -191,7 +209,8 @@ end
 	'set bot token os helper.',
 	'',
 	'version',
-	'show bot version'
+	'show bot version',
+	''
     },
     patterns = {
       '^(autoleave) (%w+)$',
@@ -203,6 +222,7 @@ end
       '^(getconfig)$',
       '(settoken) (.*)$',
       '^(version)$',
+	  '^(lists)$'
 
     },
     run = run,
