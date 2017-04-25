@@ -32,7 +32,7 @@
 <h3 align="left"> <strong>run :</strong>
 </h3>
 <pre>
-<span>./bot.sh run #for run helper and tg-bot</span>
+<span>./bot.sh -run #for run helper and tg-bot</span>
 <span>./bot.sh -r #for run tg-bot best</span>
 <span>./bot.sh -api #for run api bot</span>
 </pre>
