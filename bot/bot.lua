@@ -216,6 +216,7 @@ local x_sudo
 	['en'] = 'English',
 	['fa'] = 'فارسی'
 	},
+		token = {},
     enabled_plugins = {"gpmod","plugins","active","boobs","callback","clac","expire","extra","help","sudo","id","imdb","inpm"
 	,"msg_cheack","pin","report","setlang","vip","write"},
 	helper_plugins = {"help","callback","helper","boobs","write","settings"},
