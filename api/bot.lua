@@ -9,8 +9,13 @@ redis = (loadfile "./libs/redis.lua")()
 url = require('socket.url')
 json = require('dkjson')
 serpent = require('serpent')
+local config_cheack = io.open('./data/config.lua','r')
+if config_cheack ~= nil then
 config = loadfile('./data/config.lua')()
-api = dofile('./bot/api.lua')
+else
+print('we cant find config in (./data/config.lua) please run cli bot first')
+os.exit()
+endapi = dofile('./bot/api.lua')
 local f = io.open('help.lua','r')
 if f ~= nil then
 else
