@@ -36,7 +36,7 @@ local msger = tonumber(((msgs / groupmsg) * 100))
 local msger = math.ceil(msger)
 local rank = function();local data = load_data(_config.chats.managed[msg.to.peer_id]);
 if data.rank[uid] then return '\n*rank :* `'..data.rank[uid]..'`' else return '' end end
-local text = _('user info : \n*user :* `%s`\n*your msgs in group :* `[%s%] %s\\`\n*All group msgs :* `%s`'):format(username,math.ceil(msgs),msger,groupmsg)..rank()
+local text = _('user info : \n*user :* %s\n*your msgs in group :* `[%s]%s`\n*All group msgs :* `%s`'):format(username,math.ceil(msgs)..'%',msger,groupmsg)..rank()
 return get_pics(uid,sphoto,text)
 end
 
