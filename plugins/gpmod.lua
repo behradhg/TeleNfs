@@ -859,7 +859,7 @@ end
       data.link = 'revoked'
       save_data(data, extra.file)
     elseif extra.mute ~= true then
-      reply_msg(extra.msg.id, result.invite_link_, ok_cb, true)
+      reply_msg(extra.msg.id, 'Link for group : \n '..result.invite_link_:escape_hard(), ok_cb, true)
     end
   end
 
@@ -2055,6 +2055,9 @@ if (matches[1] == 'group' and matches[2] == 'settings') or (matches[1]== 'settin
   local title = ('*Settings for %s :*'):format(msg.to.id)
   table.insert(text, title)
   table.insert(text, 'Lock : ')
+  if not next(data.lock) then
+	return "Settings not found Please cheack group config"
+	end
   for k,v in pairs(data.lock) do
     matn = '*-* *%s '..k..'* : `'..v..'`'
     table.insert(text, matn:format('Lock'))
