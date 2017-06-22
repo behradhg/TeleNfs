@@ -2055,7 +2055,7 @@ if (matches[1] == 'group' and matches[2] == 'settings') or (matches[1]== 'settin
   local title = ('*Settings for %s :*'):format(msg.to.id)
   table.insert(text, title)
   table.insert(text, 'Lock : ')
-  if not next(data.lock) then
+  if data.lock or not next(data.lock) then
 	return "Settings not found Please cheack group config"
 	end
   for k,v in pairs(data.lock) do
