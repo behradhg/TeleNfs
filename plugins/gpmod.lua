@@ -10,6 +10,8 @@ do
   '^(gif) (%a+)$',
   '^(fwd) (%a+)$',
   '^(video) (%a+)$',
+  '^(imute) (.*) > (.*)$',
+  '^(imute)$',
   '^(warnmod) (%a+)$',
   '^(warnmax) (%d+)$','^(warn) (@)(%g+)$', '^(warn) (.*)$','^(warn)$','^(unwarn)$',
   '^(autoleave) (%a+)$','^(banlist)$',
@@ -136,7 +138,7 @@ end
 local function get_sudolist(msg)
   local sudoers = _("list of sudo users:\n\n")
     for k,v in pairs(_config.sudo_users) do
-      sudoers = sudoers .. '- ' .. get_uname(v) .. ' - `' .. k .. '`\n'
+      sudoers = sudoers .. '- ' .. get_uname(v):escape() .. '\n'
     end
     reply_msg(msg.id, sudoers, ok_cb, true)
   end
@@ -1268,7 +1270,111 @@ end
     local data = load_data(_config.chats.managed[gid])
 
     if is_owner(msg, gid, uid) then
+	 
+	 if matches[1] == "imute" and matches[2] then
+local block
+local blocks
+
+	 block = {matches[2]:match('^(%d+):(%d+)$')}
+		if not block[1] and not block[2] then  -- begin cheack 
+			return '*Invalid* start time ☹️'
+				elseif not block[2] then
+					return '*404* start time `minuts` Not found ☹️'
+					elseif not block[1] then
+					return '*404* start time `hour` Not found ☹️'
+			elseif  tonumber(block[1]) > 24 or tonumber(block[1]) < 0 then
+				return '*Invalid* start time `hour` ☹️'
+				elseif  tonumber(block[2]) > 60 or tonumber(block[2]) < 0 then
+				return '*Invalid* start time `minuts` ☹️'
+          elseif  tonumber(block[1]) == 24 and tonumber(block[2]) > 0 then
+				return '*Invalid* start time `minuts` ☹️'
+end
+
+	 blocks = {matches[3]:match('^(%d+):(%d+)$')}
+		if not blocks[1] and not blocks[2] then  -- begin cheack 
+			return '*Invalid* end time ☹️'
+				elseif not blocks[2] then
+					return '*404* end time `minuts` Not found ☹️'
+					elseif not blocks[1] then
+					return '*404* end time `hour` Not found ☹️'
+			elseif  tonumber(blocks[1]) > 24 or tonumber(blocks[1]) < 0 then
+				return '*Invalid* end time `hour` ☹️'
+				elseif  tonumber(blocks[2]) > 60 or tonumber(blocks[2]) < 0 then
+				return '*Invalid* end time `minuts` ☹️'
+				elseif  tonumber(blocks[1]) == 24 and tonumber(blocks[2]) > 0 then
+				return '*Invalid* end time `minuts` ☹️'
+end
+
+	if block[1] == blocks[1] then
+		if block[2] == blocks[2] then
+		return '*Invalid* end time and start time 😑'
+		else
+		return '*dadash dari eshtab mizani 😑'
+		end
+else
+
+for i=0 , 48 do
+h = tonumber(block[1]) + i
+if h > 24 then
+h = h - 24
+end
+   if tonumber(blocks[1]) == h then
+		timer = i
+		break
+	end
+end
+end
+
+for i=0 , 48 do
+h = my.time.h + i
+if h > 24 then
+h = h - 24
+end
+   if tonumber(block[1]) == h then
+		timer_to = i
+		break
+	end
+end
 	
+		 data.endtime = {m = blocks[2] , h = blocks[1]}
+		 data.starttime = {m = block[2] , h = block[1]}
+		 data.toimute = true
+		 data.lock.all = 'no'
+         save_data(data, chat_db)
+return ("حالت سکوت برای گروه شما تا %s ساعت دیگر اجر می شود و بعد از %s ساعت به پایان می رسد."):format(timer_to , timer)
+
+			
+end
+	  
+	  if matches[1] == 'imute' and not matches[2] then
+		if data.toimute then
+		for i=0 , 48 do
+h = my.time.h + i
+if h > 24 then
+h = h - 24
+end
+   if tonumber(data.starttime.h) == h then
+		timer_to = i
+		break
+	end
+end
+		return ("شما %s ساعت تا شروع سوکوت فاصله دارید"):format(timer_to)
+		elseif data.toiunmute then
+		return "گروه شما هم اکنون در حالت خاموشی به سر میبرد"
+		else
+		return "برای این گروه حالت سکوتی تعریف نشده است"
+	  end
+	  end
+	  
+	  if matches[1] == 'clear' and matches[2] == 'imute' then
+	  		 data.endtime = nil
+		 data.starttime = nil
+		 data.toimute = false
+		 data.toiunmute = false
+		 data.lock.all = 'no'
+         save_data(data, chat_db)
+	  return 'تنظیمات سکوت گروه خالی شده است'
+	  end
       if matches[1] == 'setprivate' then
         data.public = false
         save_data(data, chat_db)
@@ -2055,7 +2161,7 @@ if (matches[1] == 'group' and matches[2] == 'settings') or (matches[1]== 'settin
   local title = ('*Settings for %s :*'):format(msg.to.id)
   table.insert(text, title)
   table.insert(text, 'Lock : ')
-  if data.lock or not next(data.lock) then
+  if not data.lock or not next(data.lock) then
 	return "Settings not found Please cheack group config"
 	end
   for k,v in pairs(data.lock) do
@@ -2349,7 +2455,45 @@ end
 end
 end
 
+local function cron()
+local data
+	for k , v in pairs(config.chats.managed) do
+		data = load_data(v)
+			print('1')
+			if data.toimute then
+				print('2')
+				if data.endtime.m and data.endtime.h and data.starttime.m and data.starttime.h then
+				print('3')
+					if data.starttime.h == my.time.h then
+					print('4')
+						if data.starttime.m <= my.time.m then
+						print('5' , k)
+							data.lock.all = 'yes'
+							data.toimute = false
+							data.toiunmute = true
+							td.sendMessage(k, 0,1, 'گروه شما به حالت سکوت در می اید و بعد از پایان زمان از بین میرود',1,'md')
+							save_data(data, v)
+						end
+					end
+			end
+		elseif data.toiunmute then
+			if data.endtime.m and data.endtime.h and data.starttime.m and data.starttime.h then
+				if data.endtime.h == my.time.h then
+					if data.endtime.m <= my.time.m then
+						data.lock.all = 'no'
+						data.toimute = true
+						data.toiunmute = false
+						td.sendMessage(k, 0,1, 'ساعت خاموشی گروه به پایین رسیده است',1,'md')
+						save_data(data, v)
+					end
+				end
+			end
+		end
+end
+end
+
 plugins['run'] = run
+plugins['cron'] = cron
 plugins['description'] = 'Administration plugin.'
 plugins['patterns'] = triggers
 plugins['usage'] = {'*send : *`[/!#]gpmod`'}
