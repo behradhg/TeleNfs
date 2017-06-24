@@ -1,10 +1,18 @@
-﻿# start nfs source project.
+# start nfs source project.
 package.path = package.path .. ';.luarocks/share/lua/5.2/?.lua'
   ..';.luarocks/share/lua/5.2/?/init.lua'
 package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
 print('\27[1mLoading lua :\27[0;39;49m',_VERSION)
 local f = assert(io.popen('/usr/bin/git describe --tags', 'r'))
- VERSION = assert(f:read('*a'))
+VERSION = assert(f:read('*a'))
+	  my = {}
+	  my.time = {}
+	  my.time.Parameter = {
+	  ['key'] = "KHNG1F4FI9WB", -- put your key here
+	  ['format'] = "json",
+	  ['by'] = "zone",
+	  ['zone'] = "Asia/Tehran",
+	  }
 
 f:close()
 chats = {}
@@ -17,15 +25,29 @@ require("./bot/utils")
 function getMe(cb,cmd) 
 tdcli_function ({ID = "GetMe",}, cb, cmd) 
 end
+
+function up_time()
+  local url = "http://api.timezonedb.com/v2/get-time-zone?"
+for i , i_val in pairs(my.time.Parameter) do
+		url = url.. i .. '=' .. i_val .. '&'
+end
+	  local dat , suc = performRequest(url)
+	  local tab = JSON.decode(dat)
+	  local x = tab.formatted:split(' ')
+	  local y = x[2]:split(':')
+	  my.time.h = y[1]
+	  my.time.m = y[2]
+	  my.time.s = y[3]
+end
+
 function do_bot(arg, data)
  bot = {id = data.id_}
  end
 function tdcli_update_callback(data)  -- Get some msg
-
 if not started then
 print('bot is not started')
     return
-  end
+end
   a = 0
   while not bot do
   a = a + 1
@@ -34,27 +56,32 @@ print('bot is not started')
   break
   end
   end
-  
+
   if not data.date_ then
   data.date_ = os.time()
   end  
   
+
   if data.date_ - 5 > os.time() then -- old msg 
   return false
   end 
   
       if (data.ID == "UpdateMessageContent") then -- do plugins with edited msg :|
+	      up_time()
+
 	  print('match edit msgs')
 	  td.getMessage(data.chat_id_, data.message_id_,function(a , b)
 	  msg = edit_tg(b)
+	  if msg then
 	  tdcli_function ({ID = "GetUser",user_id_ = msg.from.id}, user_callback, msg)
+	  end
 	  end
 	  )
       return  pre_process_edit(data)
 	  end
 
 	  if (data.ID == "UpdateNewMessage") then
-	  
+	      up_time()
 	local data = pre_process_msg(data)
 	Data = data   -- to save new tg tables
 	local username = export_username(data)
@@ -70,11 +97,11 @@ msg = oldtg(data)
 if msg.from.id == bot.id then
 return print('not vaild : msg from us')
 end
-
 tdcli_function ({ID = "GetUser",user_id_ = data.message_.sender_user_id_}, user_callback, msg)
 end
 end
 if last_cron ~= os.date('%M') then
+	      up_time()
     last_cron = os.date('%M')
     for name, plugin in pairs(plugins) do
       if plugin.cron then -- Call each plugin's cron function, if it has one.
@@ -128,7 +155,7 @@ function get_uname(uid)
 local uname = config.username[uid]
 td.getUser(uid, save_username,{user = uid})
 if uname then
-return '@'..uname..'['..uid..']'
+return '@'..uname..' ['..uid..']'
 else
 td.getUser(uid, save_username,{user = uid})
 return uid
