@@ -121,10 +121,6 @@ if matches[1] == 'vp' and is_sudo(msg.from.id) then
 return '*'..serpent.block(Data, {comment=false})..'*'
 end
 
-if matches[1] == 'setend' and is_sudo(msg.from.id) then
-redis:set('endmsg',matches[2])
-return 'set to:\n\n'  
-end
 
 if matches[1] == 'rank' and is_owner(msg, gid, uid) then
 local rank = matches[2]
@@ -164,8 +160,6 @@ end
 	  '^(id) (@)(.*)$',
       '^(id) (.*)$',
       '^(vp)$',
-	  '^(setend) (.*)$'
-
     },
     run = run
   }
