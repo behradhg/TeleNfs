@@ -1,4 +1,4 @@
-﻿local function checktodaygr(cb_extra, success, result)
+local function checktodaygr(cb_extra, success, result)
 	local hash = ''
 	local thash=''
 	for k,user in pairs(result.members) do
@@ -20,7 +20,7 @@
 	end
 	end
 end
-local function checktodaych(cb_extra, success, result)
+function checktodaych(cb_extra, success, result)
 	local hash = ''
 	local thash=''
 	for k,user in pairs(result) do
@@ -44,11 +44,8 @@ local function checktodaych(cb_extra, success, result)
 end
 local function cron()
 
--- for v,chat in pairs(_chats.chats) do
--- channel_get_users('channel#id'..chat[1], checktodaych, chat[1])
--- chat_info('chat#id'..chat[1], checktodaygr, chat[1])
--- end
 end
+
 local function pre_process(msg)
 local uid = msg.message_.sender_user_id_ or false
 local gid = tonumber(msg.message_.chat_id_) or false
@@ -149,12 +146,31 @@ text = text.._('\n 2⃣  〖%s〗\n📨 Number of user msgs: %s\n👾sticker: %s
 end
 end
 td.sendText(tonumber(msg.to.id), 0, 1, 0, nil, text, 0, 'html', ok_cb, cmd)
-
 end
+
+local function clear_activech(cb_extra,result)
+	min = result.members_
+	for i = 0 ,#min do
+	uid = min[i].user_id_
+    local shash = 'utmsgst:'..uid..':'..cb_extra
+    local phash = 'utmsgph:'..uid..':'..cb_extra
+    local thash = 'utmsgtex:'..uid..':'..cb_extra
+    redis:set(shash,0)
+    redis:set(phash,0)
+    redis:set(thash,0)
+   end
+end
+
 local function run(msg,matches)
-if msg.to.type == 'cahnnel' then -- de bug soon
+if matches[2] then
+td.getChannelMembers(msg.to.id, 0, 'Recent', 100,clear_activech , msg.to.id)
+return "*success!* active list has been cleared"
+end
+
+if msg.to.type == 'cahnnel' then 
 td.getChannelMembers(msg.to.id, 0, 'Recent', 100,getactivech , msg.to.id)
 end
+
 end
 return {
  description = 'show active users',
@@ -165,7 +181,8 @@ return {
       
     },
   patterns = {
-	"^active$",
+	"^(active)$",
+	"^(active) (clear)$",
   }, 
   pre_process = pre_process,
   cron = cron,
