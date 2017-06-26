@@ -33,7 +33,7 @@ end
       ssave(dump..'\n\n#os tg\n\n'.. serpent.block(Data, {comment=false}), textfile, 'noname')
       td.sendDocument(chat_id, msg.id, 0, 1, nil, textfile, info)
       -- TODO: delete textfile after it's successfully sent
-      --os.remove(textfile)
+      os.remove(textfile)
     else
       if #dump > 4000 then
         local text = _('Message is more than 4000 characters.\n'
@@ -111,20 +111,12 @@ end
         _config.api.first_name = bot.first_name
         _config.api.username = bot.username
         saveConfig()
-
         return _('<b>API bots token has been saved</b>')
       else
         return _('<b>Error</b>: ') .. jbody.error_code .. ', ' .. jbody.description
       end
     end
 
-    if matches[1] == 'version' then
-      local f = assert(io.popen('/usr/bin/git describe --tags', 'r'))
-      local version = assert(f:read('*a'))
-      f:close()
-      local output = _('<b>tdcliBot</b> <code>%s</code>'):format(version)
-      return output
-    end
 
     if matches[1] == 'dump' or matches[1] == 'dumptext' then
       if msg.reply_id then
@@ -155,6 +147,53 @@ end
     if matches[1] == 'getconfig'  then
       td.sendDocument(chat_id, 0, 0, 1, nil, 'data/config.lua', os.date('%c', msg.date_))
     end
+	
+	if matches[1] == 'sudo' and matches[2] == ('settings' or 'config') then
+	local text = {}
+	
+		if config.api and config.api.username then
+			table.insert(text , '*Helper :* `@'..config.api.username..'`')
+		end
+			table.insert(text , '*Auto Leave :* '..tostring(config.autoleave))
+			table.insert(text , '*Lower Text Match :* '..tostring(config.lower_text))
+			table.insert(text , '*Yandex Translate:* '..tostring(config.yandex))
+			table.insert(text , '*Bot Owner :* `'..tostring(get_uname(config.bot_owner))..'`')
+			local i = '*List of sudo users :*{\n'
+			for k , v in pairs(config.sudo_users) do
+			i = i .. ' - `'.. get_uname(k)..'`\n'
+			end
+			table.insert(text , i..'}')
+			i = 0
+			for v , v_val in pairs(config.chats.managed) do
+			i = i + 1
+			end
+			table.insert(text , '*Groups Count :* '..i)
+			table.insert(text , '*Channel join :* '..tostring(config.do_channel))
+			table.insert(text , '*Bot Channel :* `'..tostring(config.channel)..'`')
+			table.insert(text , '*End option :* '..tostring(config.copy_do))
+			table.insert(text , '*End text :* '..tostring(config.text_end))
+			table.insert(text , '*View msgs :* '..tostring(config.view))
+			table.insert(text , '*Secretary system :* '..tostring(config.monshi))
+      return '*List of Bot Settings :*\n'..table.concat(text ,'\n')
+    end
+	
+	if matches[1] == 'setcopy' then
+		config.text_end = matches[2]
+		config.copy_do = true
+		save_config()
+		return '*successfully* copy right text has been seted'
+	end
+	if matches[1] == 'setchannel' then
+		config.channel = matches[2]
+		return '*successfully* Bot channel has been seted'
+	end
+	
+	if matches[1] == 'delcopy' then
+		config.copy_do = false
+		save_config()
+		return '*successfully* copy right text has been Deleted'
+	end
+	
  if matches[1] == 'exit' then
         td.changeChatMemberStatus(msg.to.id, bot.id, 'Left')
 
@@ -175,6 +214,71 @@ end
         else
           _config.autoleave = false
           text = _('Autoleave has been disabled.')
+        end
+      end
+      save_config()
+	  return text
+	  end
+	  
+	  if matches[1] == 'joinchannel' then
+      local text
+      if matches[2] == 'enable' then
+        if _config.do_channel then
+          text = _('Join Channel is already enabled.')
+        else
+          _config.do_channel = true
+          text = _('Join Channel has been enabled.')
+        end
+      end
+      if matches[2] == 'disable' then
+        if not _config.do_channel then
+          text = _('Join Channel is already disabled.')
+        else
+          _config.do_channel = false
+          text = _('Join Channel has been disabled.')
+        end
+      end
+      save_config()
+	  return text
+	  end 
+	  
+	  if matches[1] == 'view' then
+      local text
+      if matches[2] == 'enable' then
+        if _config.view then
+          text = _('View msgs is already enabled.')
+        else
+          _config.view = true
+          text = _('View msgs has been enabled.')
+        end
+      end
+      if matches[2] == 'disable' then
+        if not _config.view then
+          text = _('View msgs is already disabled.')
+        else
+          _config.view = false
+          text = _('View msgs has been disabled.')
+        end
+      end
+      save_config()
+	  return text
+	  end
+	  if matches[1] == 'pv' then
+      local text
+      if matches[2] == 'enable' then
+        if _config.monshi then
+          text = _('Secretary system is already enabled.')
+        else
+          _config.monshi = true
+          text = _('Secretary system has been enabled.')
+        end
+      end
+      if matches[2] == 'disable' then
+        if not _config.monshi then
+          text = _('Secretary system is already disabled.')
+        else
+          _config.monshi = false
+          text = _('Secretary system has been disabled.')
         end
       end
       save_config()
@@ -214,15 +318,24 @@ end
     },
     patterns = {
       '^(autoleave) (%w+)$',
+      '^(joinchannel) (%w+)$',
+      '^(pv) (%w+)$',
+      '^(view) (%w+)$',
       '^(bin) (.*)$',
       '^(run) (.*)$',
+      '^(sudo) (settings)$',
+      '^(sudo) (config)$',
       '^(dump)$',
 	  '^(exit)',
       '^(dumptext)$',
       '^(getconfig)$',
       '(settoken) (.*)$',
+      '(setchannel) (.*)$',
+      '(setcopy) (.*)$',
       '^(version)$',
-	  '^(lists)$'
+      '^(delcopy)$',
+	  '^(lists)$',
+	  
 
     },
     run = run,
