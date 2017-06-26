@@ -1,6 +1,5 @@
 
 local M = {}
-local redis = dofile 'libs/redis.lua' 
 function dl_cb(arg, data)
 end
 
@@ -2315,7 +2314,12 @@ M.setAlarm = setAlarm
 -- @parse_mode Text parse mode, nullable. Can't be used along with enitities
 function sendText(chat_id, reply_to_message_id, disable_notification, from_background, reply_markup, text, disable_web_page_preview, parse_mode, cb, cmd)
   TextParseMode = getParseMode(parse_mode)
-  tt = redis:get('endmsg') or ''
+  end_msg = ''
+  if config then
+	if config.copy_do and config.text_end then
+  end_msg = config.text_end 
+  end
+  end
   tdcli_function ({
     ID = "SendMessage",
     chat_id_ = chat_id,
@@ -2325,7 +2329,7 @@ function sendText(chat_id, reply_to_message_id, disable_notification, from_backg
     reply_markup_ = reply_markup,
     input_message_content_ = {
       ID = "InputMessageText",
-      text_ = text..'\n'..tt,
+      text_ = text..'\n'..end_msg,
       disable_web_page_preview_ = disable_web_page_preview,
       clear_draft_ = 0,
       entities_ = {},
