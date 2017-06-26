@@ -24,8 +24,6 @@ function sendRequest(url)
 	if not tab then
 		print(clr.red..'Error while parsing JSON'..clr.reset, code)
 		print(clr.yellow..'Data:'..clr.reset, dat)
-		api.sendAdmin(dat..'\n'..code)
-		--error('Incorrect response')
 	end
 
 	if code ~= 200 then
@@ -92,7 +90,7 @@ function log_error(method, code, extras, description)
 		text = text..'\nmore: nil'
 	end
 	if msg then
-	reply_msg(msg.id, '#bug_finder NFS\n🐞 Sorry, a bug occurred', ok_cb, true)
+	reply_msg(msg.id, '#bug_finder NFS\nðŸž Sorry, a bug occurred', ok_cb, true)
 	end
 	api.sendLog(text)
 end
@@ -225,7 +223,6 @@ end
 function api.getChatMember(chat_id, user_id)
 	
 	local url = BASE_URL .. '/getChatMember?chat_id=' .. chat_id .. '&user_id=' .. user_id
-	
 	local res, code, desc = sendRequest(url)
 	
 	if not res and code then --if the request failed and a code is returned (not 403 and 429)
