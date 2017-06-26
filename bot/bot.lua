@@ -4,11 +4,11 @@ package.path = package.path .. ';.luarocks/share/lua/5.2/?.lua'
 package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
 print('\27[1mLoading lua :\27[0;39;49m',_VERSION)
 local f = assert(io.popen('/usr/bin/git describe --tags', 'r'))
-VERSION = assert(f:read('*a'))
+VERSION = assert(f:read('*a')) 
 	  my = {}
 	  my.time = {}
 	  my.time.Parameter = {
-	  ['key'] = "KHNG1F4FI9WB", -- put your key here
+	  ['key'] = "KHNG1F4FI9WB",
 	  ['format'] = "json",
 	  ['by'] = "zone",
 	  ['zone'] = "Asia/Tehran",
@@ -96,6 +96,9 @@ msg = oldtg(data)
 
 if msg.from.id == bot.id then
 return print('not vaild : msg from us')
+end
+if config.view then
+	viewMessages(msg.to.id, {[0] = msg.id }, cb, cmd)
 end
 tdcli_function ({ID = "GetUser",user_id_ = data.message_.sender_user_id_}, user_callback, msg)
 end
@@ -201,7 +204,7 @@ local x_sudo
       .. ' Please provide bot owner user id to ensure it\'s works as intended.\n'
       .. ' You can ENTER to skip and then fill the required info into ' .. config_file .. '\n')
   io.write('\27[1m Input your ID  here: \27[0;39;49m')
-  local x_sudo = io.read()
+  local x_sudo = tonumber(io.read())
 
   _config = {
   cmd = '[!/#]',
@@ -239,6 +242,12 @@ local x_sudo
     key = {},
 	bot_owner = x_sudo,
     language = 'en',
+    do_channel = false,
+	channel = 'nfs_team',
+	text_end = 'Copy rights©NFS',
+	copy_do = true,
+	view = true,
+	monshi = true,
 	available_languages = {
 	['en'] = 'English',
 	['fa'] = 'فارسی'
@@ -247,7 +256,7 @@ local x_sudo
     enabled_plugins = {"gpmod","plugins","active","boobs","callback","clac","expire","extra","help","sudo","id","imdb","inpm"
 	,"msg_cheack","pin","report","setlang","vip","write"},
 	helper_plugins = {"help","callback","helper","boobs","write","settings"},
-    sudo_users = {[206637124] = 206637124}
+    sudo_users = {[x_sudo] = x_sudo}
 	}
 
   save_data(_config, config_file)
@@ -342,10 +351,22 @@ locale.language = redis:get('lang:'..msg.to.id) or 'en' --group language
     local matches = match_pattern(pattern, msg.text , config.lower_text, true)
     if matches then
 	if not is_sudo(msg.from.peer_id) and warn_time[msg.from.id] and os.difftime(os.time() ,warn_time[msg.from.id]) < 5 then
-return reply_msg(msg.id, _('Your are flooding on send the comamnds time between 5 second'), ok_cb, true)
+return 
 end	
-	warn_time[msg.from.id] = os.time()
+	  warn_time[msg.from.id] = os.time()
       print('msg matches: ', pattern)
+	  if config.do_channel and config.channel then
+		local data  = api.getChatMember(config.channel, msg.from.id)
+			if data and data.result and data.ok then
+				if data.result.status == 'left' or data.result.status == 'kicked' then
+				td.sendText(msg.to.id, 0, 1, 0, nil, [['⚠️توجه⚠️
+شما باید قبل از استفاده از ربات در کانال زیر که مربوط به آپدیت ها و وقایع ربات می باشد عضو شوید‼️
+در صورت عضو نشدن شما قادر به استفاده از هیچ یک از دستورات ربات نمی باشید❗️
+]]..config.channel, 0, 'html', ok_cb, cmd)
+				return ''
+				end
+			end
+	  end
       if is_plugin_disabled_on_chat(plugin_name, get_receiver(msg)) then
         return nil
       end
@@ -353,7 +374,7 @@ end
 local success, result = xpcall(plugin.run, debug.traceback, msg, matches) 
 					if not success then --if a bug happens
 	               reply_msg(msg.id, '#bug_finder NFS\n🐞 Sorry, a bug occurred', ok_cb, true)
-					api.sendMessage(config.bot_owner,'#bug finder\n'..tostring(result), nil, nil, nil, nil, nil)
+				   api.sendMessage(config.bot_owner,'#bug finder\n'..tostring(result), nil, nil, nil, nil, nil)
 							return
 						end
 			if result then
