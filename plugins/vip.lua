@@ -7,19 +7,6 @@ local function run_bash(str)
   return result
 end
 
--------------------------------------
-function is_vip(gid , uid)
-if is_sudo(uid) then
-return true
-end
-if redis:sismember('viphash' , gid) then
-return true
-end
-return false
-
-end
-
-
   ----------------------
 local  function lua(str)
   local output = loadstring(str)()
@@ -65,7 +52,6 @@ end
 function run(msg, matches)
     local gid = msg.to.peer_id
     local uid = msg.from.peer_id
---if is_vip_group(msg) then
 if matches[1] == 'food' then
 local url = "http://lorempixel.com/400/200/food/MaxTeamCh"
 local file = download_to_file(url,'test.webp')
@@ -86,16 +72,6 @@ local random = math.random (100)
 local sticker = js[random].jpeg_url
 local file = download_to_file(sticker,'anime.webp')
 td.sendDocument(get_receiver(msg), 0, 0, 1, nil, file)
-end
-if matches[1] == 'vid' and matches[2] then
-local url , res = http.request('http://www.omdbapi.com/?t='..matches[2])
-if res ~= 200 then return "No connection" end
-local jdat = json:decode(url)
-local text = 'Title : '..jdat.Title..'\nYear : '..jdat.Year..'\nRuntime : '..jdat.Runtime..'\nGenre : '..jdat.Genre..'\nLanguage : '..jdat.Language..'\n\n@MaXTeamCh'
-local stick = jdat.Poster
-local file = download_to_file(stick,'vid.webp')
-td.sendDocument(get_receiver(msg), 0, 0, 1, nil, file)
-return text
 end
 if matches[1] == 'voice' and matches[2] then
 local url = "http://tts.baidu.com/text2audio?lan=en&ie=UTF-8&text="..matches[2]
@@ -424,7 +400,6 @@ end
     '^(food)$',
 	'^(logo) (.*)$',
 	'^(anime)$',
-	'^(vid) (.+)$',
     '^(voice) (.+)$',
 	'^(time)$',
 	'^(tr) (.+) (.+)$',
