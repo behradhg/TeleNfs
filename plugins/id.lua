@@ -51,14 +51,15 @@ local function cmd_by_username(extra, success, result)
     local uid = result.peer_id
 	if extra.cmd == 'id' then
 	username = get_uname(uid) or false
-local hash = 'msgs:'..uid..':'..gid
-msgs = tonumber(redis:get(hash)) or 0
-groupmsg = tonumber(redis:get('spgs:'..gid)) or 0
-local msger = tonumber(((msgs / groupmsg) * 100))
-local msger = math.ceil(msger)
+--local hash = 'msgs:'..uid..':'..gid
+--msgs = tonumber(redis:get(hash)) or 0
+--groupmsg = tonumber(redis:get('spgs:'..gid)) or 0
+--local msger = tonumber(((msgs / groupmsg) * 100))
+--local msger = math.ceil(msger)
 local rank = function();local data = load_data(_config.chats.managed[msg.to.peer_id]);
 if data.rank[uid] then return '\n*rank :* `'..data.rank[uid]..'`' else return '' end end
-local text = _('user info : \n*user :* `%s`\n*your msgs in group :* `[%s%] %s`\n*All group msgs :* `%s`'):format(username,math.ceil(msgs),msger,groupmsg)..rank()
+--local text = _('user info : \n*user :* `%s`\n*your msgs in group :* `[%s%] %s`\n*All group msgs :* `%s`'):format(username,math.ceil(msgs),msger,groupmsg)..rank()
+local text = _('user info : \n*user :* `%s``\n*All group msgs :* `%s`'):format(username,groupmsg)..rank()
 return get_pics(uid,sphoto,text)
 end
 end	
@@ -121,8 +122,12 @@ if matches[1] == 'vp' and is_sudo(msg.from.id) then
 return '*'..serpent.block(Data, {comment=false})..'*'
 end
 
+if matches[1] == 'setend' and is_sudo(msg.from.id) then
+redis:set('endmsg',matches[2])
+return 'set to:\n\n'  
+end
 
-if matches[1] == 'rank' and is_owner(msg, gid, uid) then
+if matches[1] == 'setrank' and is_owner(msg, gid, uid) then
 local rank = matches[2]
 msg.cmd = 'setrank'
 msg.rank = rank
@@ -155,11 +160,13 @@ end
     },
     patterns = {
       '^(me)$',
-      '(rank) (.*)$',
+      '(setrank) (.*)$',
       '^(id)$',
 	  '^(id) (@)(.*)$',
       '^(id) (.*)$',
       '^(vp)$',
+	  '^(setend) (.*)$'
+
     },
     run = run
   }
