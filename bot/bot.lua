@@ -140,8 +140,7 @@ local uid = mgs[i].id_
 local uname = mgs[i].username_
  
 if uname then
-config.username[uid] = uname
-save_config()
+redis:set('user:'..uid..':username', uname)
 end
 end
 return 'done'
@@ -155,7 +154,7 @@ end
 
 
 function get_uname(uid)
-local uname = config.username[uid]
+local uname = redis:get('user:'..uid..':username')
 td.getUser(uid, save_username,{user = uid})
 if uname then
 return '@'..uname..' ['..uid..']'
@@ -168,13 +167,11 @@ end
 
 function save_username(extra,msg)
 if msg.username_ then
-config.username[extra.user] = msg.username_
-save_config()
+redis:set('user:'..msg.sender_user_id_..':username', msg.username_)
 else
 return
 end
 end
-
 
 function do_notify (user, msg)
     local n = notify.Notification.new(user, msg)
