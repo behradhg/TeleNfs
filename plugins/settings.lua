@@ -1,4 +1,4 @@
-﻿function is_moders(uid , gid)
+function is_moders(uid , gid)
 local test = mem_info(gid, uid)
 if test then
 local stats = test.result.status
