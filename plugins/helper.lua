@@ -1,4 +1,4 @@
-﻿users = {}
+users = {}
 
  function load_data(filename)
   if not filename then
@@ -39,7 +39,7 @@ end
 
 	return keyboard
 	end
-	    local mkey = {{"ورود به پنل مدیریتی گروه","خرید سکه"},{'گروه رایگان','راهنما'},{'پشتبانی','زیر مجموعه'},{'خرید گروه'}}
+	    local mkey = {{"ورود به پنل مدیریتی گروه"},{'گروه رایگان','راهنما'},{'پشتبانی','زیر مجموعه'}}
 	panl =  {{'تنظیمات'},{'دریافت اطلاعات','لیست مدیران'},{'بازگشت به تنظیمات اولیه'},{'افراد ساکت','افراد مسدود'},{'خاموشن کردن گروه','پاک کردن'},{'بازگشت به منوی اصلی','امتیاز دادن به ربات'}}
 function run(msg)
 local userid = msg.chat.id
@@ -87,26 +87,6 @@ return send_key(msg.from.id, [[لینک کاربری شما
 زمانی که تعداد زیر مجموعه های شما به 50 برسد 
 برای شما پیغامی  برای دریافت لینک ارسال می شود و بعد از دریافت لینک 
 ربات عضو گروه شما می شود و توکن برای شما ارسال می شود]]..'\n '..link..'\n*Power by Nfs*' , mkey, true)
-elseif msg.text:lower() == 'خرید سکه' and to == 'main' then
-nerkh = {{"5000 سکه",'10000 سکه'},{'15000 سکه'},{'بازگشت به منوی اصلی'}}
-local back = {{'بازگشت به منوی اصلی'}}
-return send_key(msg.from.id, 'یکی از گزینه های زیر رو انتخواب کنید', nerkh, true)
-elseif msg.text:lower() == '5000 سکه' and to == 'main' then
-return send_key(msg.from.id, [[برای خرید 5000 سکه از لینک زیر استفاده کنید ]] , back, true)
-elseif msg.text:lower() == '10000 سکه' and to == 'main' then
-return send_key(msg.from.id, [[برای خرید 1000 سکه از لینک زیر استفاده کنید]] , back, true)
-elseif msg.text:lower() == '15000 سکه' and to == 'main' then
-return send_key(msg.from.id, [[برای خرید 15000 سکه از لینک زیر استفاده کنید ]] , back, true)
-elseif msg.text:lower() == 'خرید گروه' and to == 'main' then
-nerkh = {{"گروه یک ماهه 5000 هزار تومن",'گروه سه ماهه 10000 هزار تومن'},{'گروه ناحدود 15000 هزار تومن'},{'بازگشت به منوی اصلی'}}
-local back = {{'بازگشت به منوی اصلی'}}
-return send_key(msg.from.id, 'یکی از گزینه های زیر رو انتخواب کنید', nerkh, true)
-elseif msg.text:lower() == 'گروه یک ماهه 5000 هزار تومن' and to == 'main' then
-return send_key(msg.from.id, [[برای خرید گروه یک ماهه روی لینک زیر کلیک کنید و پس از پرداخت لینک گروه خود را بفرستید]] , back, true)
-elseif msg.text:lower() == 'گروه سه ماهه 10000 هزار تومن' and to == 'main' then
-return send_key(msg.from.id, [[برای خرید گروه سه ماهه روی لینک زیر کلیک کنید و پس از پرداخت لینک گروه خود را بفرستید]] , back, true)
-elseif msg.text:lower() == 'گروه ناحدود 15000 هزار تومن' and to == 'main' then
-return send_key(msg.from.id, [[برای خرید گروه نامحدود روی لینک زیر کلیک کنید و پس از پرداخت لینک گروه خود را بفرستید]] , back, true)
 elseif msg.text:lower() == 'زیر مجموعه' and to == 'main' then
     local link = '[https://t.me/NfsHelperBot?start='..msg.from.id..']'
     local users = tonumber(db:get('point:'..msg.chat.id))
@@ -285,16 +265,16 @@ local gp = db:hget('gp',msg.from.id)
 	if is_lock then
 db:hset('step',msg.from.id,'edit_lock')
 db:hset('chose_lock',msg.from.id,is_lock)
-return send_key(msg.from.id, 'لطفا حالت قفل را مشخص کنید', {{'اخطار','حذف','اخراج','مجاز'},{'🔙'}}, true)
+return send_key(msg.from.id, 'لطفا حالت قفل را مشخص کنید', {{'اخطار','حذف','اخراج','مجاز','ریپورت','بن'},{'🔙'}}, true)
 end
        elseif to == 'edit_lock' then
 if msg.text == '🔙' then
 db:hset('step',msg.from.id,'os_panl')
 return send_key(msg.from.id, 'برگشت:', panl, true)
 end
-    local is_match = msg.text:match('(اخطار)') or msg.text:match('(حذف)') or msg.text:match('(اخراج)') or msg.text:match('(مجاز)') 
+    local is_match = msg.text:match('(اخطار)') or msg.text:match('(حذف)') or msg.text:match('(اخراج)') or msg.text:match('(مجاز)') or msg.text:match('(ریپورت)') or msg.text:match('(بن)')
 if is_match then
-if is_match == 'اخطار' then mod = 'warn'        elseif is_match == 'حذف' then mod = 'del'        elseif is_match == 'اخراج' then mod = 'kick'        elseif is_match == 'مجاز' then mod = 'no' end
+if is_match == 'اخطار' then mod = 'warn'        elseif is_match == 'حذف' then mod = 'del'	elseif is_match == 'ریپورت' then mod = 'report'	elseif is_match == 'بن' then mod = 'ban'       elseif is_match == 'اخراج' then mod = 'kick'        elseif is_match == 'مجاز' then mod = 'no' end
     local gp = db:hget('gp',msg.from.id)
     local lock = db:hget('chose_lock',msg.from.id)
     local data = load_data("data/"..gp.."/"..gp..".lua")
@@ -359,6 +339,10 @@ elseif stats == 'warn' then
 mod = 'kick'
 elseif stats == 'kick' then
 mod = 'yes'
+elseif stats == 'ban' then
+mod = 'ban'
+elseif stats == 'report' then
+mod = 'report'
 elseif stats == 'yes' then
 mod = 'ok'
 end  
