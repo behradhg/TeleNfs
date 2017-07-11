@@ -90,7 +90,7 @@ function log_error(method, code, extras, description)
 		text = text..'\nmore: nil'
 	end
 	if msg then
-	reply_msg(msg.id, '#bug_finder NFS\nðŸž Sorry, a bug occurred', ok_cb, true)
+	reply_msg(msg.id, '#bug_finder NFS\n🐞 Sorry, a bug occurred', ok_cb, true)
 	end
 	api.sendLog(text)
 end
