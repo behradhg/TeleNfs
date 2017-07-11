@@ -29,7 +29,7 @@ do
   '^(leaveall)$',
   '^(link revoke)$',
   '^(mkgroup) (.*)$',
-  '^(add)(realm)$',
+  '^(add) (realm)$',
   '^(mk)(realm) (.*)$',
   '^(token)$',
   '^(removerealm)$',
@@ -38,6 +38,7 @@ do
   '^(ownerlist)$', '^(ownerlist) (%d+)$',
   '^(rules)$',
   '^(setabout) (.*)$',
+  '^(setdescription) (.*)$',
   '^(setname) (.*)$',
   '^(setphoto)$',
   '^(setprivate)$',
@@ -243,7 +244,7 @@ local function get_sudolist(msg)
   end
 
   local function clean_bots(extra,msg) -- clean bots function
-  local our_id = 315115554
+  local our_id = 315115554 --input your cli bot here
   local helper_id = config.api.id
     for i=0,#msg.members_ do
       local uid = msg.members_[i].user_id_
@@ -282,7 +283,12 @@ local function get_sudolist(msg)
       end
   end
 
-
+  local function invite_user(msg, chat_id, user_id)
+    local gid = tonumber(chat_id)
+    local uid = tonumber(user_id)
+	   td.addChatMembers(gid, {[0] = uid}, nil, cmd)
+  end
+  
   function ban_user(extra, gid, uid)
     local msg = extra.msg
     local usr = extra.usr
@@ -679,7 +685,7 @@ end
       username = msg.to.username or '',
       welcome = {
         to = 'group',
-        pm = 'hello %s to group chat',
+        pm = 'Hello',
         stats = 'enable',
       },
     }
@@ -731,7 +737,7 @@ end
       demote({msg=extra, usr=usr}, gid, uid)
     end
     if cmd:match('^invite') then
-      invite_user(extra, gid, uid)
+      invite_user({msg=extra, usr=usr}, gid, uid)
     end
     if cmd:match('^ban') then
       ban_user({msg=extra, usr=usr}, gid, uid)
@@ -919,7 +925,7 @@ end
 	-- set os api
 	-- print(config.api.id)
 	-- print(gid) 
-	 addChatMembers(gid, {[0] = config.api.id}, nil, cmd)
+	 td.addChatMember(gid, config.api.id, nil, cmd)
 	-- exe -- batch file
       os.execute('mkdir -p data/' .. gid)
       _config.chats.managed[gid] = cfg
@@ -1950,7 +1956,7 @@ if matches[1] == 'reply' then
 end
 -- Set custom welcome message
 if matches[1] == 'setwelcome' and matches[2] then
-  data.welcome.msg = matches[2]
+  data.welcome.pm = matches[2]
   save_data(data, chat_db)
   reply_msg(msg.id, 'Set group welcome message to:\n' .. matches[2], ok_cb, true)
 end
@@ -1977,23 +1983,36 @@ if matches[1] == 'welcome' then
     .. 'Welcome message will send as private message to new member.', ok_cb, true)
   end
   if matches[2] == 'disable' then
-    if data.welcome.to == 'no' then
+    if data.welcome.stats == 'disable' then
       reply_msg(msg.id, 'Welcome service is not enabled.', ok_cb, true)
     else
-      data.welcome.to = 'no'
+      data.welcome.stats = 'disable'
       save_data(data, chat_db)
       reply_msg(msg.id, 'Welcome service has been disabled.', ok_cb, true)
+    end
+  end
+   if matches[2] == 'enable' then
+    if data.welcome.stats == 'enable' then
+      reply_msg(msg.id, 'Welcome service is enabled.', ok_cb, true)
+    else
+      data.welcome.stats = 'enable'
+      save_data(data, chat_db)
+      reply_msg(msg.id, 'Welcome service has been enabled.', ok_cb, true)
     end
   end
 end
 
 -- Set group's description
-if matches[1] == 'setabout' and matches[2] then
+if matches[1] == 'setdescription' and matches[2] then
   data.description = matches[2]
   save_data(data, chat_db)
   reply_msg(msg.id, 'Set group description to:\n' .. matches[2], ok_cb, true)
 end
 
+if matches[1] == 'setabout' and matches[2] then
+  td.changeChannelAbout(msg.to.id, matches[2], dl_cb, nil)
+  reply_msg(msg.id, 'Set group about to:\n' .. matches[2], ok_cb, true)
+end
 -- Set group's rules
 if matches[1] == 'setrules' and matches[2] then
   data.rules = matches[2]
@@ -2213,6 +2232,17 @@ if matches[1] == 'ban' then
   end
 end
 
+-- Invite user by {id|username|name|reply} and re-kick if rejoin
+if matches[1] == 'invite' then
+  if msg.reply_id and not matches[2]then
+    get_message(msg.reply_id, action_by_reply, msg)
+  elseif matches[2] == '@' then
+    resolve_username(matches[3], resolve_username_cb, {msg=msg, matches=matches})
+  elseif matches[3] and matches[3]:match('^%d+$') then
+    invite_user({msg=msg, usr=matches[3]}, gid, matches[3])
+  end
+end
+
 -- Lift ban by {id|username|name|reply}
 if matches[1] == 'unban' then
   if msg.reply_id and not matches[2]then
@@ -2288,9 +2318,9 @@ end
 end
 
 -- Print group's description.
-if matches[1] == 'about' then
+if matches[1] == 'description' then
 local about = data.description
-local gtitle = data.title or 'group about :'
+local gtitle = data.title or 'group description :'
 if not about then
   reply_msg(msg.id, _('No description available.'), ok_cb, true)
 else
@@ -2298,6 +2328,7 @@ else
 --  api.sendMessage(get_receiver_api(msg), '<b>' .. gtitle .. '</b>\n\n' .. about, 'html', true, false, msg.id)
 end
 end
+
 
 -- Print group's rules
 if matches[1] == 'rules' then
