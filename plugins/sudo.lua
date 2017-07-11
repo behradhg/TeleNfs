@@ -37,7 +37,7 @@ end
     else
       if #dump > 4000 then
         local text = _('Message is more than 4000 characters.\n'
-                .. 'Use <code>%sdumptext</code> instead.'):format(_config.cmd)
+                .. 'Use <code>dumptext</code> instead.')
       else
 		td.sendText(chat_id, 0, 1, 0, nil, '<code>' .. escapeHtml(dump) .. '</code>', 0, 'html', ok_cb, cmd)
 
@@ -175,6 +175,15 @@ end
 			table.insert(text , '*View msgs :* '..tostring(config.view))
 			table.insert(text , '*Secretary system :* '..tostring(config.monshi))
       return '*List of Bot Settings :*\n'..table.concat(text ,'\n')
+	--[[  local tab = {
+	{
+		['rank'] = "1",
+        ['user_rank'] = "data",
+        ['name'] = "ali",
+        ['time'] = "new",
+	},
+}
+	  return '*'..json:encode(tab)..'*']]
     end
 	
 	if matches[1] == 'setcopy' then
