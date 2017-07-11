@@ -1,4 +1,4 @@
-﻿-- start plugin by behrad
+-- start plugin by behrad
 --begin some function
 kicktable = {}  -- do seed anti spam
 exe_antispam = {}
@@ -371,10 +371,8 @@ kick_user(msg, gid, xid)
 end
 end
 end
+		
 if config.autoleave and msg.message_.content_.ID == "MessageChatAddMembers" then
-if data.welcome.stats == 'enable' then
-send_warn(gid,data.welcome.pm)
-end
 local mgs = msg.message_.content_.members_
 for i = 0,#msg.message_.content_.members_ do
 local uid = mgs[i].id_
