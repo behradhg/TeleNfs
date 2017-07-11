@@ -1,4 +1,4 @@
-﻿local function doKeyboard_settings(chat_id)
+local function doKeyboard_settings(chat_id)
     local keyboard = { {
 		{text = '🛠تنظیمات گروه', callback_data = 'settings:locks:'..chat_id}
 		},
@@ -145,9 +145,7 @@ local function do_keyboard_rules(chat_id)
     local data = load_data('data/' .. chat_id .. '/' .. chat_id .. '.lua')
     local keyboard = {}
 	if data.rules then
-    table.insert(keyboard, {{text = '🗑حذف قوانین', callback_data = 'rules:delete:'..chat_id},{text = '📑ثبت قوانین جدید', callback_data = 'rules:set:'..chat_id}})
-    else
-    table.insert(keyboard, {{text = '📑ثبت قوانین جدید', callback_data = 'rules:set:'..chat_id}})
+    table.insert(keyboard, {{text = '🗑حذف قوانین', callback_data = 'rules:delete:'..chat_id}})
     end
     table.insert(keyboard, {{text = '🔙', callback_data = 'config:back:'..chat_id}})
     return keyboard
@@ -156,10 +154,8 @@ end
 local function do_keyboard_about(chat_id)
     local data = load_data('data/' .. chat_id .. '/' .. chat_id .. '.lua')
     local keyboard = {}
-	if data.about then
-    table.insert(keyboard, {{text = '🗑حذف توضیحات', callback_data = 'about:delete:'..chat_id},{text = '📑ثبت توضیحات جدید', callback_data = 'about:set:'..chat_id}})
-    else
-    table.insert(keyboard, {{text = '📑ثبت توضیحات جدید', callback_data = 'about:set:'..chat_id}})
+	if data.description then
+    table.insert(keyboard, {{text = '🗑حذف توضیحات', callback_data = 'about:delete:'..chat_id}})
     end
     table.insert(keyboard, {{text = '🔙', callback_data = 'config:back:'..chat_id}})
     return keyboard
@@ -174,9 +170,6 @@ local function do_keyboard_lists(chat_id)
 	if next(data.owners) then
     table.insert(keyboard, {{text = 'مدیر های ارشد©', callback_data = 'list:owners:'..chat_id}})
     end
-	if next(data.mute_user) then
-	    table.insert(keyboard, {{text = 'افراد ساکت🔇', callback_data = 'list:mutes:'..chat_id}})
-	end   
 	if next(data.warn_counter) then
 		    table.insert(keyboard, {{text = 'افراد اخطار دیده😒', callback_data = 'list:warnuser:'..chat_id}})
 end
@@ -185,38 +178,13 @@ end
     return keyboard
 end
 
-function on_x_msgs(msg)
-local xx = extra[msg.from.id]
-local rules = db:get('rules:'..msg.from.id)
-local rules = db:get('about:'..msg.from.id)
-local bk = db:get('gp:'..msg.from.id)
-if xx and rules and bk then
-local data = load_data('data/' .. bk .. '/' .. bk .. '.lua')
-data.rules = msg.text
-save_data(data, 'data/' .. bk .. '/' .. bk .. '.lua')
-key,text = do_keyboard_rules(bk),'قوانین گروه با موفقیت تنظیم شد :'
-if xx.inline then
-editinlineText(xx.inline,text, true, key)
-else
-local cid , mid  = xx.cid , xx.mid
-db:set('rules:'..msg.from.id,false)
-editMessageText(cid, mid, text, true, key)
+local function do_keyboard_mods(chat_id)
+    local data = load_data('data/' .. chat_id .. '/' .. chat_id .. '.lua')
+    local keyboard = {}
+    table.insert(keyboard, {{text = '🔙', callback_data = 'config:lists:'..chat_id}})
+    return keyboard
 end
-end
-if xx and about and bk then
-local data = load_data('data/' .. bk .. '/' .. bk .. '.lua')
-data.about = msg.text
-save_data(data, 'data/' .. bk .. '/' .. bk .. '.lua')
-key,text = do_keyboard_rules(bk),'اطلاعات گروه با موقیت تنظیم شد:'
-if xx.inline then
-editinlineText(xx.inline,text, true, key)
-else
-local cid , mid  = xx.cid , xx.mid
-db:set('about:'..msg.from.id,false)
-editMessageText(cid, mid, text, true, key)
-end
-end
-end
+
 extra = {}
 function behrad(msg,blocks) 
 local bk = tostring(blocks[3])
@@ -225,21 +193,19 @@ return print('no moderrr')
 end
 local key , text
 
-if blocks[1] == 'rules' then
+if blocks[1] == 'about' then
 local cmd = tostring(blocks[2])
-if cmd == 'set' then
-text,key = 'لطفا قبل از هر دستوری متن را ارسال کنید\nلطفا قوانین جدید را ارسال کنید:'
-extra[msg.from.id] = {}
-if msg.inline_message_id then
- extra[msg.from.id] = {inline = msg.inline_message_id}
-else
-local cid , mid  = msg.message.chat.id , msg.message.message_id
- extra[msg.from.id] = {cid = cid,mid = mid}
+if cmd == 'delete' then
+print('tester')
+local data = load_data('data/' .. bk .. '/' .. bk .. '.lua')
+data.description = nil
+save_data(data, 'data/' .. bk .. '/' .. bk .. '.lua')
+key,text = do_keyboard_rules(bk),'توضیحات شما با موفقیت پاک شدند'
 end
-db:set('rules:'..msg.from.id,true)
-db:set('gp:'..msg.from.id,bk)
 end
 
+if blocks[1] == 'rules' then
+local cmd = tostring(blocks[2])
 if cmd == 'delete' then
 print('tester')
 local data = load_data('data/' .. bk .. '/' .. bk .. '.lua')
@@ -257,25 +223,51 @@ local data = load_data('data/' .. bk .. '/' .. bk .. '.lua')
 if data.rules then
 text = '📰قوانین گروه :\n['..data.rules..']\n©NFS-#source'
 else
-text = '🗞قوانینی برای گروه تایین نشده است:\n*📍توجه : شما می توانید قوانین را از منوی زیر تنظیم کنید*'
+text = '🗞قوانینی برای گروه تایین نشده است'
 end
 key = do_keyboard_rules(bk)
 elseif blocks[2] == 'about' then
 local data = load_data('data/' .. bk .. '/' .. bk .. '.lua')
-if data.about then
-text = '📰درباره گروه :\n['..data.about..']\n©NFS-#source'
+if data.description then
+text = '📰درباره گروه :\n['..data.description..']\n©NFS-#source'
 else
-text = '🗞توضیحاتی برای گروه تایین نشده است:\n*📍توجه : شما می توانید توضیحات را از منوی زیر تنظیم کنید*'
+text = '🗞توضیحاتی برای گروه تایین نشده است'
 end
 key = do_keyboard_about(bk)
 elseif blocks[2] == 'lists' then
 text,key = '📊لیست مورد نظر خود را انتخاب کنید:\n\n📇*select your list :*',do_keyboard_lists(bk)
+elseif blocks[1] == 'list' and blocks[2] == 'mods' then
+local data = load_data('data/' .. bk .. '/' .. bk .. '.lua')
+local message = "list of mod users for group :\n"
+if data.moderators then
+for k,v in pairs(data.moderators) do
+text = message .. '- ' .. v .. ' - `' .. k .. '`\n'
+end
+end
+key = do_keyboard_mods(bk)
+elseif blocks[1] == 'list' and blocks[2] == 'owners' then
+local data = load_data('data/' .. bk .. '/' .. bk .. '.lua')
+local message = "list of owner users for group :\n"
+if data.owners then
+for k,v in pairs(data.owners) do
+text = message .. '- ' .. v .. ' - `' .. k .. '`\n'
+end
+end
+key = do_keyboard_mods(bk)
+elseif blocks[1] == 'list' and blocks[2] == 'warnuser' then
+local data = load_data('data/' .. bk .. '/' .. bk .. '.lua')
+local message = "list of warn users of group :\n"
+if data.warn_counter then
+for k,v in pairs(data.warn_counter) do
+text = message .. '- ' .. v .. ' - `' .. k .. '`\n'
+end
+end
+key = do_keyboard_mods(bk)
 elseif blocks[2] == 'links' then
 local data = load_data('data/' .. bk .. '/' .. bk .. '.lua')
 key = {}
 if data.link == "" then
-text = '⚓️گروه شما لینکی ندارد :\n📍*توجه برای تنظیم لینک می توانید از منوی زیر اقدام کنید*\n📎your group didnt have link :'
-table.insert(key, {{text = '📍تنظیم لینک', callback_data = 'links:set:'..bk}})
+text = '⚓️گروه شما لینکی ندارد \n📎your group didnt have link :'
 else
 table.insert(key, {{text = '📎لینک گروه', url = data.link}})
 text = '📎لینک گروه شما : [' .. data.link .. ']'
@@ -321,11 +313,12 @@ end
 	'^(config):(back):(.*)',
 	'^(config):(links):(.*)',
 	'^(config):(about):(.*)',
-	'^(rules):(set):(.*)',
 	'^(rules):(delete):(.*)',
-	'^(about):(set):(.*)',
+	'^(list):(mods):(.*)',
+	'^(list):(owners):(.*)',
+--	'^(list):(mutes):(.*)',
+	'^(list):(warnuser):(.*)',
 	'^(about):(delete):(.*)'
 	},
     call = behrad,
-	launch = on_x_msgs
   }
