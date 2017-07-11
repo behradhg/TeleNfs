@@ -1,7 +1,7 @@
 #!/bin/bash
 # =====================================================================================================
 # Copyright (C) steady.sh v1.2 2016 iicc (@iicc1)
-# Max steady.sh 
+# Nfs steady.sh 
 # =====================================================================================================
 # tnx to DBteam
 
@@ -34,7 +34,7 @@ rst=$'\e[0m'
 
 echo -e "\e[100m                                 Steady -- script                                 \e[00;37;40m"
 echo -e "\e[100m                                 Writed by behrad                                 \e[00;37;40m"
-echo -e "\e[01;34m                                  For Max source                                  \e[00;37;40m"
+echo -e "\e[01;34m                                  For Nfs source                                  \e[00;37;40m"
 echo ""
 
 sleep 1
@@ -127,7 +127,7 @@ then
 	echo -e ""
 	echo "TMUX multiplexer option has been triggered." >&2
 	echo "Starting script..."
-	echo "Max is best"
+	echo "Nfs is best"
 	sleep 1.5
 	echo -e "\e[0m"
 	tmux_mode
