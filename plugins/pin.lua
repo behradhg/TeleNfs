@@ -1,4 +1,4 @@
-﻿do
+do
 
   local function run(msg, matches)
     if msg.to.type == 'user'  then return end
@@ -34,6 +34,7 @@
           if matches[1] == 'unpin' then
             redis:del(phash)
             td.unpinChannelMessage(chat_id)
+            td.deleteMessages(chat_id, {[0] = pin_id})
             return  _('Pinned message has been unpinned.')
           else
             td.getMessage(chat_id, pin_id, function(a, d)
