@@ -502,9 +502,13 @@ function edit_tg(x)
     msg.from.id = tonumber(x.sender_user_id_)
 	msg.from.peer_id = tonumber(msg.from.id)
 	msg.to.peer_id = tonumber(msg.to.id)
+	if x.content_ then
 if x.content_.ID == "MessageText" then
         msg.text = x.content_.text_
     end
+	else
+	return nil
+end
 	if group_type(msg)  then
 	msg.to.peer_type = group_type(msg) 
 	msg.to.type = group_type(msg) 
@@ -652,7 +656,7 @@ function oldtg(data)
     if data.message_.content_.ID then
         msg.action = data.message_.content_.ID
     end
-    if data.message_.content_.ID == "MessageChatAddMembers" or data.message_.content_.ID == "MessageChatDeleteMember" or
+	if data.message_.content_.ID == "MessageChatAddMembers" or data.message_.content_.ID == "MessageChatDeleteMember" or
         data.message_.content_.ID == "MessageChatChangeTitle" or data.message_.content_.ID == "MessageChatChangePhoto" or
         data.message_.content_.ID == "MessageChatJoinByLink" or data.message_.content_.ID == "MessageGameScore" then
         msg.service = true
