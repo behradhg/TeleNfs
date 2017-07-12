@@ -1,10 +1,11 @@
-# start nfs source project.
+--# start nfs source project.
 package.path = package.path .. ';.luarocks/share/lua/5.2/?.lua'
   ..';.luarocks/share/lua/5.2/?/init.lua'
 package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
 print('\27[1mLoading lua :\27[0;39;49m',_VERSION)
 local f = assert(io.popen('/usr/bin/git describe --tags', 'r'))
 VERSION = assert(f:read('*a')) 
+bot_id = 276811404 -- put your cli id here
 	  my = {}
 	  my.time = {}
 	  my.time.Parameter = {
@@ -94,7 +95,7 @@ end
     if msgb.content_.ID == "MessageText" then
 msg = oldtg(data)
 
-if msg.from.id == bot.id then
+if msg.from.id == bot_id then
 return print('not vaild : msg from us')
 end
 if config.view then
@@ -165,8 +166,9 @@ end
 end
 
 
-function save_username(extra,msg)
+function save_username(extra)
 if msg.username_ then
+local msg = extra.msg
 redis:set('user:'..msg.sender_user_id_..':username', msg.username_)
 else
 return
@@ -504,7 +506,7 @@ end
 
 function pre_process_msg(msg)
 
-if bot and msg.message_.sender_user_id_ == bot.id then
+if bot and msg.message_.sender_user_id_ == bot_id then
 return print('not vaild : msg from us')
 end
 
