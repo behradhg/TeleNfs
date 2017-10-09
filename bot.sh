@@ -55,7 +55,7 @@ function help_play() {
 function tg() {
   wget https://valtman.name/files/telegram-cli-1222
   mv telegram-cli-1222 tg
-  chmod 7777 tg
+  chmod a+x tg
   
 }
 
@@ -78,7 +78,7 @@ logo_play
    done
    exit
    elif [[ $1 == "-run" ]]; then
-   chmod 777 steady.sh
+   chmod a+x steady.sh
    screen ./steady.sh
    elif [[ $1 == "-cr" ]]; then
 if [ ! -f "./tg" ]; then echo "Please install tg"; exit; fi
