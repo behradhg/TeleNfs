@@ -9,8 +9,7 @@
 <pre>
 <span>git clone https://github.com/behradhg/TeleNfs.git</span>
 <span>cd TeleNfs</span>
-<span>chmod a+x</span>
-<span>./bot.sh</span>
+<span>chmod a+x ./bot.sh</span>
 <span>./bot.sh -tg</span>
 <span>./bot.sh -apt</span>
 </pre>
